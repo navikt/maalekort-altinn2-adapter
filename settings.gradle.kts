@@ -1,0 +1,1 @@
+rootProject.name = "maalekort-altinn2-adapter"
