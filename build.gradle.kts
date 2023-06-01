@@ -4,27 +4,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 group = "no.nav.maalekort"
 version = "1.0"
 
-val kluentVersion = "1.68"
 val ktorVersion = "1.6.8"
 val prometheusVersion = "0.15.0"
 val micrometerVersion = "1.8.4"
-val spekVersion = "2.0.18"
-val mockkVersion = "1.12.3"
 val slf4jVersion = "1.7.36"
 val logbackVersion = "1.2.11"
 val javaxVersion = "2.1.1"
 val logstashEncoderVersion = "7.0.1"
-val postgresVersion = "42.3.3"
-val hikariVersion = "5.0.1"
-val flywayVersion = "7.5.2"
-val vaultJdbcVersion = "1.3.9"
 val jacksonVersion = "2.13.2"
 val jacksonDatabindVersion = "2.13.2.2"
-val postgresEmbeddedVersion = "0.13.3"
 val kafkaVersion = "2.7.0"
 val avroVersion = "1.11.0"
 val confluentVersion = "6.2.1"
-val brukernotifikasjonerSchemaVersion = "2.5.1"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -77,6 +68,11 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
+    // Metrics and Prometheus
+    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
+    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
+    implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
+    implementation("io.prometheus:simpleclient_pushgateway:$prometheusVersion")
 
     // JSON parsing
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion")
@@ -90,7 +86,6 @@ dependencies {
     }
     implementation("io.confluent:kafka-avro-serializer:$confluentVersion")
     implementation("org.apache.avro:avro:$avroVersion")
-    implementation("com.github.navikt:brukernotifikasjon-schemas:$brukernotifikasjonerSchemaVersion")
 }
 
 configurations.implementation {
@@ -103,11 +98,11 @@ tasks {
     }
 
     withType<ShadowJar> {
-        manifest.attributes["Main-Class"] = "no.nav.maalekort.BootstrapApplicationKt"
+        manifest.attributes["Main-Class"] = "no.nav.styringsinformasjon.BootstrapApplicationKt"
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "14"
+        kotlinOptions.jvmTarget = "17"
     }
 
     withType<Test> {
