@@ -65,4 +65,3 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: .nais/naiserator-dev.yaml
           VAR: image=${{ needs.build.outputs.image }}
-
