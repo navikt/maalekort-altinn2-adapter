@@ -1,0 +1,34 @@
+name: Deploy Aiven kafka topics
+
+on:
+  push:
+    paths:
+      - '.nais/topics/maalekort-altinn2-topic.yaml'
+      - '.github/workflows/deploy-topic.yaml'
+
+jobs:
+  deploy-topic-dev:
+    name: Deploy topic to dev
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: nais/deploy/actions/deploy@master
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/topics/maalekort-altinn2-topic.yaml
+          VARS: .nais/topics/config-dev.yaml
+
+  deploy-topic-prod:
+    name: Deploy topics to prod
+    needs: deploy-topic-dev
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: nais/deploy/actions/deploy@master
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/topics/maalekort-altinn2-topic.yaml
+          VARS: .nais/topics/config-prod.yaml
