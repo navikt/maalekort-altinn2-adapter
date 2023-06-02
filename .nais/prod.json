@@ -1,0 +1,5 @@
+{
+  "env": {
+    "KTOR_ENV": "remote"
+  }
+}

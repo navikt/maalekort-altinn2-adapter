@@ -16,6 +16,7 @@ val jacksonDatabindVersion = "2.13.2.2"
 val kafkaVersion = "2.7.0"
 val avroVersion = "1.11.0"
 val confluentVersion = "6.2.1"
+val altinnKanalSchemasVersion = "2.0.0"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -33,10 +34,28 @@ allOpen {
 
 repositories {
     mavenCentral()
-    maven(url = "https://jitpack.io")
     maven(url = "https://packages.confluent.io/maven/")
-    maven(url = "https://repo.adeo.no/repository/maven-releases/")
-    maven(url = "https://github.com/navikt/vault-jdbc")
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/syfo-xml-codegen")
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
+    }
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/syfotjenester")
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
+    }
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
+    }
 }
 
 configurations.all {
@@ -86,6 +105,7 @@ dependencies {
     }
     implementation("io.confluent:kafka-avro-serializer:$confluentVersion")
     implementation("org.apache.avro:avro:$avroVersion")
+    implementation("no.nav.altinnkanal.avro:altinnkanal-schemas:$altinnKanalSchemasVersion")
 }
 
 configurations.implementation {

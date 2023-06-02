@@ -1,0 +1,13 @@
+{
+  "kafkaBrokerServer": "http://localhost:9093",
+  "schemaRegistry": {
+    "url": "http://localhost:28900",
+    "username": "schema_username",
+    "password": "schema_password"
+  },
+  "sslConfig": {
+    "truststoreLocation": "ts.loc",
+    "keystoreLocation": "ks.loc",
+    "credstorePassword": "password"
+  }
+}

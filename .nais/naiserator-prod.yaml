@@ -37,3 +37,8 @@ spec:
     - "https://maalekort-altinn2-adapter.intern.nav.no"
   kafka:
     pool: nav-prod
+  env:
+  {{#each env}}
+     - name: {{@key}}
+       value: "{{this}}"
+  {{/each}}

@@ -61,4 +61,5 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: .nais/naiserator-dev.yaml
+          VARS: .nais/dev.json
           VAR: image=${{ needs.build.outputs.image }}
