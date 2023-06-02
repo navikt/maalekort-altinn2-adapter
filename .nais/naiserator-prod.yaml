@@ -37,4 +37,3 @@ spec:
     - "https://maalekort-altinn2-adapter.intern.nav.no"
   kafka:
     pool: nav-prod
-  leaderElection: true
