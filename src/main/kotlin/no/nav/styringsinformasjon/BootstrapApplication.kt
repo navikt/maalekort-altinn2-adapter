@@ -44,7 +44,7 @@ fun main() {
             module {
                 state.running = true
                 serverModule()
-                kafkaModule(env)
+                // kafkaModule(env)
             }
         }
     )
