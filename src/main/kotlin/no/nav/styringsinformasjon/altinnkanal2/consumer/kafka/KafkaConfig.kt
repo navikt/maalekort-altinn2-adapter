@@ -24,7 +24,7 @@ const val SSL = "SSL"
 const val BASIC_AUTH_CREDENTIALS_SOURCE = "basic.auth.credentials.source"
 const val USER_INFO = "USER_INFO"
 
-const val topicAltinnMaalekortMottatt = "aapen-altinn-maalekort-mottatt-v2"
+const val topicAltinnMaalekortMottatt = "styringsinformasjon.aapen-altinn-maalekort-mottatt-v2"
 
 val zeroMillis = Duration.ofMillis(0L)
 
