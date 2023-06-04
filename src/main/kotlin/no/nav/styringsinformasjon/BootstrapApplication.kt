@@ -19,9 +19,11 @@ import io.ktor.server.netty.Netty
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.AltinnKanal2Listener
+import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.ReceivedMessageProcessor
 import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.launchKafkaListener
 import no.nav.styringsinformasjon.api.registerNaisApi
 import no.nav.styringsinformasjon.api.registerPrometheusApi
+import no.nav.styringsinformasjon.service.MaalekortService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -32,6 +34,8 @@ val backgroundTasksContext = Executors.newFixedThreadPool(4).asCoroutineDispatch
 
 fun main() {
     val env = getEnv()
+    val maalekortService = MaalekortService()
+
     val server = embeddedServer(
         Netty,
         applicationEngineEnvironment {
@@ -44,7 +48,10 @@ fun main() {
             module {
                 state.running = true
                 serverModule()
-                // kafkaModule(env)
+                kafkaModule(
+                    env,
+                    listOf(maalekortService)
+                )
             }
         }
     )
@@ -77,15 +84,18 @@ fun Application.serverModule() {
     state.initialized = true
 }
 
-fun Application.kafkaModule(env: Environment) {
-    runningRemotely {
-        launch(backgroundTasksContext) {
-            launchKafkaListener(
-                state,
-                AltinnKanal2Listener(env)
-            )
+fun Application.kafkaModule(env: Environment, messageProcessors: List<ReceivedMessageProcessor>) {
+    messageProcessors.forEach { messageProcessor ->
+        runningRemotely {
+            launch(backgroundTasksContext) {
+                launchKafkaListener(
+                    state,
+                    AltinnKanal2Listener(env, messageProcessor)
+                )
+            }
         }
     }
+
 }
 
 val Application.envKind

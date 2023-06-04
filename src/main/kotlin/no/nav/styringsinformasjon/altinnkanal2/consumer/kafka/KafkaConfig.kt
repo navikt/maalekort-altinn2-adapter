@@ -5,6 +5,7 @@ import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import no.nav.altinnkanal.avro.ReceivedMessage
 import no.nav.styringsinformasjon.ApplicationState
 import no.nav.styringsinformasjon.Environment
 import org.apache.kafka.clients.CommonClientConfigs
@@ -16,6 +17,10 @@ import java.util.*
 
 interface KafkaListener {
     suspend fun listen(applicationState: ApplicationState)
+}
+
+interface ReceivedMessageProcessor {
+    suspend fun processMessage(message: ReceivedMessage)
 }
 
 const val JAVA_KEYSTORE = "JKS"

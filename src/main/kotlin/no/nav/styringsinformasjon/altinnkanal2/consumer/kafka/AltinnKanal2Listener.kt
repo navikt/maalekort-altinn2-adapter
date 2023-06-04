@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class AltinnKanal2Listener(val env: Environment) : KafkaListener {
+class AltinnKanal2Listener(val env: Environment, val messageProcessor: ReceivedMessageProcessor) : KafkaListener {
     private val log: Logger = LoggerFactory.getLogger(AltinnKanal2Listener::class.java)
     private val kafkaListener: KafkaConsumer<String, ReceivedMessage>
 
@@ -24,6 +24,7 @@ class AltinnKanal2Listener(val env: Environment) : KafkaListener {
                 val receivedMessage = it.value()
                 val archiveReference = receivedMessage.getArchiveReference()
                 log.info("Received record from topic $topicAltinnMaalekortMottatt with AR $archiveReference")
+                messageProcessor.processMessage(receivedMessage)
                 kafkaListener.commitSync()
             }
         }
