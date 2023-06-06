@@ -5,12 +5,12 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.typesafe.config.ConfigFactory
-import io.ktor.application.Application
-import io.ktor.application.install
-import io.ktor.config.HoconApplicationConfig
-import io.ktor.features.ContentNegotiation
-import io.ktor.jackson.jackson
-import io.ktor.routing.routing
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.config.HoconApplicationConfig
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.routing.routing
 import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.AltinnKanal2Listener
 import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.ReceivedMessageProcessor
 import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.launchKafkaListener
+import no.nav.styringsinformasjon.api.maalekort.registerMaalekortApi
 import no.nav.styringsinformasjon.api.registerNaisApi
 import no.nav.styringsinformasjon.api.registerPrometheusApi
 import no.nav.styringsinformasjon.service.MaalekortService
@@ -61,7 +62,6 @@ fun main() {
             server.stop(10, 10, TimeUnit.SECONDS)
         }
     )
-
     server.start(wait = false)
 }
 
@@ -79,6 +79,7 @@ fun Application.serverModule() {
     routing {
         registerPrometheusApi()
         registerNaisApi(state)
+        registerMaalekortApi()
     }
 
     state.initialized = true
@@ -95,7 +96,6 @@ fun Application.kafkaModule(env: Environment, messageProcessors: List<ReceivedMe
             }
         }
     }
-
 }
 
 val Application.envKind

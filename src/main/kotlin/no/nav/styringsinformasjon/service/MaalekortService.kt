@@ -9,5 +9,6 @@ class MaalekortService : ReceivedMessageProcessor {
     private val log: Logger = LoggerFactory.getLogger(MaalekortService::class.java)
     override suspend fun processMessage(message: ReceivedMessage) {
         log.info("[MAALEKORT SERVICE]: Received ${message.getArchiveReference()}")
+        val xml = message.getXmlMessage()
     }
 }
