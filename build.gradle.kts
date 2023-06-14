@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 group = "no.nav.maalekort"
 version = "1.0"
 
-val ktorVersion = "1.6.8"
+val ktorVersion = "2.3.1"
 val prometheusVersion = "0.15.0"
 val micrometerVersion = "1.8.4"
 val slf4jVersion = "1.7.36"
@@ -22,8 +22,8 @@ val githubUser: String by project
 val githubPassword: String by project
 
 plugins {
-    kotlin("jvm") version "1.5.31"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.5.31"
+    kotlin("jvm") version "1.8.21"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.8.21"
     id("com.diffplug.gradle.spotless") version "3.18.0"
     id("com.github.johnrengelman.shadow") version "7.1.0"
 }
@@ -70,14 +70,15 @@ configurations.all {
 dependencies {
 
     // Ktor server
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-jackson:$ktorVersion")
-    implementation("io.ktor:ktor-client-apache:$ktorVersion")
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
-    implementation("io.ktor:ktor-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
     // API
     implementation("javax.ws.rs:javax.ws.rs-api:$javaxVersion")
