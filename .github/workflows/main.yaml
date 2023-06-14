@@ -12,13 +12,13 @@ jobs:
       packages: write
     env:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
-      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}    
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Setup java
         uses: actions/setup-java@v3
         with:
-          java-version: '16.x'
-          distribution: adopt
+          java-version: '19.x'
+          distribution: temurin
       - name: Checkout code
         uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -50,7 +50,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy-dev:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     name: Deploy to dev
     needs: build
     runs-on: ubuntu-latest
@@ -62,11 +62,10 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: .nais/naiserator-dev.yaml
-          VARS: .nais/dev.json
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-prod:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     name: Deploy to prod
     needs: [deploy-dev, build]
     runs-on: ubuntu-latest
@@ -78,5 +77,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: .nais/naiserator-prod.yaml
-          VARS: .nais/dev.json
           VAR: image=${{ needs.build.outputs.image }}
