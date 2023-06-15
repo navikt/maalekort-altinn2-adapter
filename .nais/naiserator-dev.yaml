@@ -37,6 +37,23 @@ spec:
     - "https://maalekort-altinn2-adapter.intern.dev.nav.no"
   kafka:
     pool: nav-dev
+  gcp:
+    sqlInstances:
+      - autoBackupHour: 1
+        cascadingDelete: true
+        collation: nb_NO.UTF8
+        databases:
+          - envVarPrefix: GCP_DB
+            name: maalekort
+        diskAutoresize: true
+        diskSize: 10
+        diskType: SSD
+        maintenance:
+          day: 1
+          hour: 4
+        name: maalekort-instance-dev
+        tier: db-f1-micro
+        type: POSTGRES_15
   env:
   {{#each env}}
      - name: {{@key}}
