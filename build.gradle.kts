@@ -20,6 +20,7 @@ val altinnKanalSchemasVersion = "2.0.0"
 val postgresVersion = "42.6.0"
 val hikariVersion = "5.0.1"
 val flywayVersion = "7.5.2"
+val gsonVersion = "2.10.1"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -106,6 +107,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("com.google.code.gson:gson:$gsonVersion")
 
     // Kafka
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")

@@ -28,8 +28,6 @@ import no.nav.styringsinformasjon.persistence.DatabaseInterface
 import no.nav.styringsinformasjon.persistence.Database
 import no.nav.styringsinformasjon.persistence.grantAccessToIAMUsers
 import no.nav.styringsinformasjon.service.MaalekortService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -57,7 +55,7 @@ fun main() {
 
             module {
                 state.running = true
-                serverModule()
+                serverModule(database)
                 kafkaModule(
                     env,
                     listOf(maalekortService)
@@ -74,8 +72,9 @@ fun main() {
     server.start(wait = false)
 }
 
-fun Application.serverModule() {
-
+fun Application.serverModule(
+    databaseAccess: DatabaseInterface
+) {
     install(ContentNegotiation) {
         jackson {
             registerKotlinModule()
@@ -88,7 +87,7 @@ fun Application.serverModule() {
     routing {
         registerPrometheusApi()
         registerNaisApi(state)
-        registerMaalekortApi()
+        registerMaalekortApi(databaseAccess)
     }
 
     state.initialized = true
