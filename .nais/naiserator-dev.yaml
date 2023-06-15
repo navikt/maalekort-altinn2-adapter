@@ -46,7 +46,7 @@ spec:
           - envVarPrefix: GCP_DB
             name: maalekort
         diskAutoresize: true
-        diskSize: 1
+        diskSize: 10
         diskType: SSD
         maintenance:
           day: 1
