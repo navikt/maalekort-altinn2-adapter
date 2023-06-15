@@ -28,6 +28,8 @@ import no.nav.styringsinformasjon.persistence.DatabaseInterface
 import no.nav.styringsinformasjon.persistence.Database
 import no.nav.styringsinformasjon.persistence.grantAccessToIAMUsers
 import no.nav.styringsinformasjon.service.MaalekortService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -36,6 +38,7 @@ data class ApplicationState(var running: Boolean = false, var initialized: Boole
 val state: ApplicationState = ApplicationState()
 val backgroundTasksContext = Executors.newFixedThreadPool(4).asCoroutineDispatcher()
 lateinit var database: DatabaseInterface
+private val log: Logger = LoggerFactory.getLogger("no.nav.syfo.main")
 
 fun main() {
     val env = getEnv()
@@ -46,6 +49,7 @@ fun main() {
             config = HoconApplicationConfig(ConfigFactory.load())
             database = Database(env.databaseConnectionConfig)
             database.grantAccessToIAMUsers()
+            log.info("Database created")
 
             val maalekortService = MaalekortService(database)
 
