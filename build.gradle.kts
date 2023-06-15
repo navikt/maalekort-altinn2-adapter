@@ -17,6 +17,9 @@ val kafkaVersion = "2.7.0"
 val avroVersion = "1.11.0"
 val confluentVersion = "6.2.1"
 val altinnKanalSchemasVersion = "2.0.0"
+val postgresVersion = "42.6.0"
+val hikariVersion = "5.0.1"
+val flywayVersion = "7.5.2"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -87,6 +90,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
+
+    // Database
+    implementation("org.postgresql:postgresql:$postgresVersion")
+    implementation("com.zaxxer:HikariCP:$hikariVersion")
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
 
     // Metrics and Prometheus
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")

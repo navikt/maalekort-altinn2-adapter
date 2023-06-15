@@ -24,7 +24,12 @@ import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.launchKafkaListene
 import no.nav.styringsinformasjon.api.maalekort.registerMaalekortApi
 import no.nav.styringsinformasjon.api.registerNaisApi
 import no.nav.styringsinformasjon.api.registerPrometheusApi
+import no.nav.styringsinformasjon.persistence.DatabaseInterface
+import no.nav.styringsinformasjon.persistence.Database
+import no.nav.styringsinformasjon.persistence.grantAccessToIAMUsers
 import no.nav.styringsinformasjon.service.MaalekortService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -32,15 +37,19 @@ data class ApplicationState(var running: Boolean = false, var initialized: Boole
 
 val state: ApplicationState = ApplicationState()
 val backgroundTasksContext = Executors.newFixedThreadPool(4).asCoroutineDispatcher()
+lateinit var database: DatabaseInterface
 
 fun main() {
     val env = getEnv()
-    val maalekortService = MaalekortService()
 
     val server = embeddedServer(
         Netty,
         applicationEngineEnvironment {
             config = HoconApplicationConfig(ConfigFactory.load())
+            database = Database(env.databaseConnectionConfig)
+            database.grantAccessToIAMUsers()
+
+            val maalekortService = MaalekortService(database)
 
             connector {
                 port = getEnvVar("APPLICATION_PORT", "8080").toInt()

@@ -9,5 +9,12 @@
     "truststoreLocation": "ts.loc",
     "keystoreLocation": "ks.loc",
     "credstorePassword": "password"
+  },
+  "databaseConnectionConfig": {
+    "dbHost": "127.0.0.1",
+    "dbPort": "5432",
+    "dbName": "maalekort",
+    "dbUsername": "maalekort-admin",
+    "dbPassword": "password"
   }
 }
