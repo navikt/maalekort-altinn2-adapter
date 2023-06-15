@@ -37,7 +37,6 @@ spec:
     - "https://maalekort-altinn2-adapter.intern.nav.no"
   kafka:
     pool: nav-prod
-  env:
   gcp:
     sqlInstances:
       - autoBackupHour: 1
@@ -55,6 +54,7 @@ spec:
         name: maalekort-instance-dev
         tier: db-f1-micro
         type: POSTGRES_15
+  env:
   {{#each env}}
      - name: {{@key}}
        value: "{{this}}"
