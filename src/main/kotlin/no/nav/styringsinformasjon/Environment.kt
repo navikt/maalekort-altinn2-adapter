@@ -22,7 +22,14 @@ fun getEnv(): Environment {
             truststoreLocation = getEnvVar("KAFKA_TRUSTSTORE_PATH"),
             keystoreLocation = getEnvVar("KAFKA_KEYSTORE_PATH"),
             credstorePassword = getEnvVar("KAFKA_CREDSTORE_PASSWORD")
-        )
+        ),
+        DbEnv(
+            dbHost = getEnvVar("GCP_DB_HOST", "127.0.0.1"),
+            dbPort = getEnvVar("GCP_DB_PORT", "5432"),
+            dbName = getEnvVar("GCP_DB_DATABASE"),
+            dbUsername = getEnvVar("GCP_DB_USERNAME"),
+            dbPassword = getEnvVar("GCP_DB_PASSWORD")
+        ),
     )
 }
 
@@ -34,7 +41,8 @@ private fun getLocalEnv() =
 data class Environment(
     val kafkaBrokerServer: String,
     val schemaRegistry: KafkaSchemaRegistryEnv,
-    val sslConfig: KafkaSslEnv
+    val sslConfig: KafkaSslEnv,
+    val databaseConnectionConfig: DbEnv
 )
 
 data class KafkaSchemaRegistryEnv(
@@ -47,4 +55,12 @@ data class KafkaSslEnv(
     val truststoreLocation: String,
     val keystoreLocation: String,
     val credstorePassword: String
+)
+
+data class DbEnv(
+    var dbHost: String,
+    var dbPort: String,
+    var dbName: String,
+    val dbUsername: String = "",
+    val dbPassword: String = ""
 )
