@@ -12,11 +12,11 @@ fun DatabaseInterface.storeMaalekortXml(xml: String) {
     """.trimIndent()
 
     val now = Timestamp.valueOf(LocalDateTime.now())
-    val varselUUID = UUID.randomUUID()
+    val entryUuid = UUID.randomUUID()
 
     connection.use { connection ->
         connection.prepareStatement(insertStatement1).use {
-            it.setObject(1, varselUUID)
+            it.setObject(1, entryUuid)
             it.setString(2, xml)
             it.setTimestamp(3, now)
             it.executeUpdate()

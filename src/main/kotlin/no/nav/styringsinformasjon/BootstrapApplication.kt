@@ -38,7 +38,6 @@ data class ApplicationState(var running: Boolean = false, var initialized: Boole
 val state: ApplicationState = ApplicationState()
 val backgroundTasksContext = Executors.newFixedThreadPool(4).asCoroutineDispatcher()
 lateinit var database: DatabaseInterface
-private val log: Logger = LoggerFactory.getLogger("no.nav.syfo.main")
 
 fun main() {
     val env = getEnv()
@@ -49,7 +48,6 @@ fun main() {
             config = HoconApplicationConfig(ConfigFactory.load())
             database = Database(env.databaseConnectionConfig)
             database.grantAccessToIAMUsers()
-            log.info("Database created")
 
             val maalekortService = MaalekortService(database)
 

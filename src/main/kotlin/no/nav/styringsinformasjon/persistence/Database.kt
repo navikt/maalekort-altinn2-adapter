@@ -8,7 +8,6 @@ import org.flywaydb.core.Flyway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-private val log: Logger = LoggerFactory.getLogger(Database::class.java.name)
 const val postgresJdbcPrefix = "jdbc:postgresql"
 
 interface DatabaseInterface {
@@ -31,9 +30,7 @@ class Database(val env: DbEnv) : DatabaseInterface {
     )
 
     init {
-        log.info("Running migration")
         runFlywayMigrations(hikariDataSource)
-        log.info("Migration completed")
     }
 
     override val connection: Connection
