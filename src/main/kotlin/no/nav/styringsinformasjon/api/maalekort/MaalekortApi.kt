@@ -14,7 +14,7 @@ fun Routing.registerMaalekortApi(
         get {
             val maalekortList = databaseAccess.fetchEveryMaalekortXml()
             // maalekortList.forEach { databaseAccess.deleteMaalekortXmlByUUID(it.uuid) }
-            call.respond(maalekortList.map { entry -> entry.xml })
+            call.respond(maalekortList.map { entry -> mapOf( entry.uuid to entry.xml ) })
         }
     }
 }
