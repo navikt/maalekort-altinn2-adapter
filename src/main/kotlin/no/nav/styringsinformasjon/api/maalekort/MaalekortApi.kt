@@ -11,8 +11,8 @@ import no.nav.styringsinformasjon.persistence.fetchEveryMaalekortXml
 import java.util.*
 
 const val deleteRequestHeader = "maalekort-uuid"
-const val errorMessageMissingHeader = "Mangler '$deleteRequestHeader' i header på request"
-private fun errorMessageNotFound(uuid: String) = "Fant ikke målekort med $uuid"
+const val errorMessageMissingHeader = "Mangler '$deleteRequestHeader' i header på request, eller ugyldig UUID-format"
+private fun errorMessageNotFound(uuid: String) = "Fant ikke målekort med uuid: $uuid"
 
 fun Routing.registerMaalekortApi(
     databaseAccess: DatabaseInterface
