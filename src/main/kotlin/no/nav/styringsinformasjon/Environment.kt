@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import java.io.File
 
 const val localPropertiesPath = "./src/main/resources/localEnv.json"
+const val secretMounthPath = "/var/run/secrets"
 val objectMapper = ObjectMapper().registerKotlinModule()
 
 fun getEnv(): Environment {
@@ -30,6 +31,10 @@ fun getEnv(): Environment {
             dbUsername = getEnvVar("GCP_DB_USERNAME"),
             dbPassword = getEnvVar("GCP_DB_PASSWORD")
         ),
+        AuthEnv(
+            username = getPropertyFromSecretsFile("username"),
+            password = getPropertyFromSecretsFile("password")
+        )
     )
 }
 
@@ -38,11 +43,15 @@ fun isLocal(): Boolean = getEnvVar("KTOR_ENV", "local") == "local"
 private fun getLocalEnv() =
     objectMapper.readValue(File(localPropertiesPath), Environment::class.java)
 
+fun getPropertyFromSecretsFile(name: String) =
+    File("$secretMounthPath/$name").readText()
+
 data class Environment(
     val kafkaBrokerServer: String,
     val schemaRegistry: KafkaSchemaRegistryEnv,
     val sslConfig: KafkaSslEnv,
-    val databaseConnectionConfig: DbEnv
+    val databaseConnectionConfig: DbEnv,
+    val auth: AuthEnv
 )
 
 data class KafkaSchemaRegistryEnv(
@@ -63,4 +72,9 @@ data class DbEnv(
     var dbName: String,
     val dbUsername: String = "",
     val dbPassword: String = ""
+)
+
+data class AuthEnv(
+    val username: String,
+    val password: String
 )

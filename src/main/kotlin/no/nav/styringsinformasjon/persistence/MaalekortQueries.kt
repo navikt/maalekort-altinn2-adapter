@@ -37,18 +37,19 @@ fun DatabaseInterface.fetchEveryMaalekortXml(): List<MaalekortXml> {
     }
 }
 
-fun DatabaseInterface.deleteMaalekortXmlByUUID(uuid: String) {
+fun DatabaseInterface.deleteMaalekortXmlByUUID(uuid: String): Int {
     val updateStatement = """DELETE
                              FROM MAALEKORT_XML
                              WHERE uuid = ?
     """.trimIndent()
 
     connection.use { connection ->
-        connection.prepareStatement(updateStatement).use {
+        val rowsDeleted = connection.prepareStatement(updateStatement).use {
             it.setObject(1, UUID.fromString(uuid))
             it.executeUpdate()
         }
 
         connection.commit()
+        return rowsDeleted
     }
 }

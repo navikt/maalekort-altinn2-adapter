@@ -1,20 +1,47 @@
 package no.nav.styringsinformasjon.api.maalekort
 
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.styringsinformasjon.persistence.DatabaseInterface
 import no.nav.styringsinformasjon.persistence.deleteMaalekortXmlByUUID
 import no.nav.styringsinformasjon.persistence.fetchEveryMaalekortXml
 
+const val deleteRequestHeader = "maalekort-uuid"
+const val errorMessageMissingHeader = "Mangler '$deleteRequestHeader' i header på request"
+private fun errorMessageNotFound(uuid: String) = "Fant ikke målekort med $uuid"
+
 fun Routing.registerMaalekortApi(
     databaseAccess: DatabaseInterface
 ) {
     route("/api/v1/maalekort") {
-        get {
-            val maalekortList = databaseAccess.fetchEveryMaalekortXml()
-            // maalekortList.forEach { databaseAccess.deleteMaalekortXmlByUUID(it.uuid) }
-            call.respond(maalekortList.map { entry -> mapOf( entry.uuid to entry.xml ) })
+        authenticate("basic-auth") {
+            get {
+                call.respond(databaseAccess.fetchEveryMaalekortXml().map { entry -> mapOf(entry.uuid to entry.xml) })
+            }
+
+            delete {
+                val maalekortToDelete = call.request.headers["maalekort-uuid"]
+                maalekortToDelete?.let {
+                    val rowsDeleted = databaseAccess.deleteMaalekortXmlByUUID(maalekortToDelete)
+                    if (rowsDeleted ==  0) {
+                        call.respond(
+                            status = HttpStatusCode.NotFound,
+                            message = errorMessageNotFound(maalekortToDelete)
+                        )
+                    }
+                    call.respond(
+                        status = HttpStatusCode.OK,
+                        message = "Slettet $rowsDeleted målekort fra databasen"
+                    )
+                }
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    message = errorMessageMissingHeader
+                )
+            }
         }
     }
 }

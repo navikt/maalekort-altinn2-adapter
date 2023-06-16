@@ -24,6 +24,7 @@ import no.nav.styringsinformasjon.altinnkanal2.consumer.kafka.launchKafkaListene
 import no.nav.styringsinformasjon.api.maalekort.registerMaalekortApi
 import no.nav.styringsinformasjon.api.registerNaisApi
 import no.nav.styringsinformasjon.api.registerPrometheusApi
+import no.nav.styringsinformasjon.api.setupAuth
 import no.nav.styringsinformasjon.persistence.DatabaseInterface
 import no.nav.styringsinformasjon.persistence.Database
 import no.nav.styringsinformasjon.persistence.grantAccessToIAMUsers
@@ -55,7 +56,10 @@ fun main() {
 
             module {
                 state.running = true
-                serverModule(database)
+                serverModule(
+                    env,
+                    database
+                )
                 kafkaModule(
                     env,
                     listOf(maalekortService)
@@ -73,6 +77,7 @@ fun main() {
 }
 
 fun Application.serverModule(
+    env: Environment,
     databaseAccess: DatabaseInterface
 ) {
     install(ContentNegotiation) {
@@ -83,6 +88,8 @@ fun Application.serverModule(
             configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         }
     }
+
+    setupAuth(env)
 
     routing {
         registerPrometheusApi()
