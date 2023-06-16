@@ -6,12 +6,13 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.styringsinformasjon.persistence.DatabaseInterface
-import no.nav.styringsinformasjon.persistence.deleteMaalekortXmlByUUID
+import no.nav.styringsinformasjon.persistence.deleteMaalekortXmlByUuidList
 import no.nav.styringsinformasjon.persistence.fetchEveryMaalekortXml
+import java.util.*
 
 const val deleteRequestHeader = "maalekort-uuid"
-const val errorMessageMissingHeader = "Mangler '$deleteRequestHeader' i header på request"
-private fun errorMessageNotFound(uuid: String) = "Fant ikke målekort med $uuid"
+const val errorMessageMissingHeader = "Mangler '$deleteRequestHeader' i header på request, eller ugyldig UUID-format"
+private fun errorMessageNotFound(uuid: String) = "Fant ikke målekort med uuid: $uuid"
 
 fun Routing.registerMaalekortApi(
     databaseAccess: DatabaseInterface
@@ -23,13 +24,13 @@ fun Routing.registerMaalekortApi(
             }
 
             delete {
-                val maalekortToDelete = call.request.headers["maalekort-uuid"]
-                maalekortToDelete?.let {
-                    val rowsDeleted = databaseAccess.deleteMaalekortXmlByUUID(maalekortToDelete)
+                val listOfMaalekortToDelete = validateUuidHeader(call.request.headers["maalekort-uuid"])
+                listOfMaalekortToDelete?.let { uuidList ->
+                    val rowsDeleted = databaseAccess.deleteMaalekortXmlByUuidList(uuidList)
                     if (rowsDeleted ==  0) {
                         call.respond(
                             status = HttpStatusCode.NotFound,
-                            message = errorMessageNotFound(maalekortToDelete)
+                            message = errorMessageNotFound(uuidList.joinToString(","))
                         )
                     }
                     call.respond(
@@ -42,6 +43,17 @@ fun Routing.registerMaalekortApi(
                     message = errorMessageMissingHeader
                 )
             }
+        }
+    }
+}
+
+private fun validateUuidHeader(header: String?): List<UUID>? {
+    return header?.let {
+        val headerUuids = header.trim().split(",")
+        return@let try {
+            headerUuids.map { uuid -> UUID.fromString(uuid.trim()) }
+        } catch (e: IllegalArgumentException) {
+            null
         }
     }
 }
