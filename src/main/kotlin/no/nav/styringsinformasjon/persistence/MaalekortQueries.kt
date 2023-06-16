@@ -1,6 +1,5 @@
 package no.nav.styringsinformasjon.persistence
 
-import java.sql.SQLType
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
