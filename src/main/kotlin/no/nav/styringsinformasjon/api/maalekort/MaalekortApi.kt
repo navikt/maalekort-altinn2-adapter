@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import no.nav.styringsinformasjon.persistence.DatabaseInterface
 import no.nav.styringsinformasjon.persistence.deleteMaalekortXmlByUUID
 import no.nav.styringsinformasjon.persistence.fetchEveryMaalekortXml
+import java.util.*
 
 const val deleteRequestHeader = "maalekort-uuid"
 const val errorMessageMissingHeader = "Mangler '$deleteRequestHeader' i header på request"
@@ -23,8 +24,9 @@ fun Routing.registerMaalekortApi(
             }
 
             delete {
-                val maalekortToDelete = call.request.headers["maalekort-uuid"]
-                maalekortToDelete?.let {
+                val listOfMaalekortToDelete = validateUuidHeader(call.request.headers["maalekort-uuid"])
+                listOfMaalekortToDelete?.map { uuid ->
+                    val maalekortToDelete = uuid.toString()
                     val rowsDeleted = databaseAccess.deleteMaalekortXmlByUUID(maalekortToDelete)
                     if (rowsDeleted ==  0) {
                         call.respond(
@@ -42,6 +44,17 @@ fun Routing.registerMaalekortApi(
                     message = errorMessageMissingHeader
                 )
             }
+        }
+    }
+}
+
+private fun validateUuidHeader(header: String?): List<UUID>? {
+    return header?.let {
+        val headerUuids = header.split(",")
+        return@let try {
+            headerUuids.map { uuid -> UUID.fromString(uuid) }
+        } catch (e: IllegalArgumentException) {
+            null
         }
     }
 }
