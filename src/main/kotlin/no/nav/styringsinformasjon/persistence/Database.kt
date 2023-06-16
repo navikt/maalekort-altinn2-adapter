@@ -5,8 +5,6 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
 import org.flywaydb.core.Flyway
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 const val postgresJdbcPrefix = "jdbc:postgresql"
 

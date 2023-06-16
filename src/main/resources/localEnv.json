@@ -16,5 +16,9 @@
     "dbName": "maalekort",
     "dbUsername": "maalekort-admin",
     "dbPassword": "password"
+  },
+  "auth": {
+    "username": "username",
+    "password": "password"
   }
 }
