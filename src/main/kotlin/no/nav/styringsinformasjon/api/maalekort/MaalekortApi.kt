@@ -50,9 +50,9 @@ fun Routing.registerMaalekortApi(
 
 private fun validateUuidHeader(header: String?): List<UUID>? {
     return header?.let {
-        val headerUuids = header.split(",")
+        val headerUuids = header.trim().split(",")
         return@let try {
-            headerUuids.map { uuid -> UUID.fromString(uuid) }
+            headerUuids.map { uuid -> UUID.fromString(uuid.trim()) }
         } catch (e: IllegalArgumentException) {
             null
         }
