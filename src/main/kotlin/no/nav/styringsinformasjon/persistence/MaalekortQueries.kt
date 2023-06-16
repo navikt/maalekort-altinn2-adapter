@@ -1,5 +1,6 @@
 package no.nav.styringsinformasjon.persistence
 
+import java.sql.SQLType
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
@@ -37,15 +38,14 @@ fun DatabaseInterface.fetchEveryMaalekortXml(): List<MaalekortXml> {
     }
 }
 
-fun DatabaseInterface.deleteMaalekortXmlByUUID(uuid: String): Int {
+fun DatabaseInterface.deleteMaalekortXmlByUuidList(uuids: List<UUID>): Int {
     val updateStatement = """DELETE
                              FROM MAALEKORT_XML
-                             WHERE uuid = ?
+                             WHERE uuid IN (${uuids.joinToString(",") { uuid -> "'$uuid'" }})
     """.trimIndent()
 
     connection.use { connection ->
         val rowsDeleted = connection.prepareStatement(updateStatement).use {
-            it.setObject(1, UUID.fromString(uuid))
             it.executeUpdate()
         }
 

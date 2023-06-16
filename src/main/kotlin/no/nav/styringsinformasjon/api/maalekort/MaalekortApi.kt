@@ -6,7 +6,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.styringsinformasjon.persistence.DatabaseInterface
-import no.nav.styringsinformasjon.persistence.deleteMaalekortXmlByUUID
+import no.nav.styringsinformasjon.persistence.deleteMaalekortXmlByUuidList
 import no.nav.styringsinformasjon.persistence.fetchEveryMaalekortXml
 import java.util.*
 
@@ -25,13 +25,12 @@ fun Routing.registerMaalekortApi(
 
             delete {
                 val listOfMaalekortToDelete = validateUuidHeader(call.request.headers["maalekort-uuid"])
-                listOfMaalekortToDelete?.map { uuid ->
-                    val maalekortToDelete = uuid.toString()
-                    val rowsDeleted = databaseAccess.deleteMaalekortXmlByUUID(maalekortToDelete)
+                listOfMaalekortToDelete?.let { uuidList ->
+                    val rowsDeleted = databaseAccess.deleteMaalekortXmlByUuidList(uuidList)
                     if (rowsDeleted ==  0) {
                         call.respond(
                             status = HttpStatusCode.NotFound,
-                            message = errorMessageNotFound(maalekortToDelete)
+                            message = errorMessageNotFound(uuidList.joinToString(","))
                         )
                     }
                     call.respond(
