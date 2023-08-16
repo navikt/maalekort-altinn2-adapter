@@ -31,7 +31,7 @@ const val USER_INFO = "USER_INFO"
 
 const val topicAltinnMaalekortMottatt = "styringsinformasjon.aapen-altinn-maalekort-mottatt-v2"
 
-val zeroMillis = Duration.ofMillis(0L)
+val oneSecondInMillis = Duration.ofMillis(1000L)
 
 fun kafkaConsumerProperties(env: Environment): Properties {
     val sslConfig = env.sslConfig

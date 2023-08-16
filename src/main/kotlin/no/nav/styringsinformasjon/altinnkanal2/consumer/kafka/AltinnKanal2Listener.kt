@@ -20,7 +20,7 @@ class AltinnKanal2Listener(val env: Environment, val messageProcessor: ReceivedM
     override suspend fun listen(applicationState: ApplicationState) {
         log.info("Started listening to topic $topicAltinnMaalekortMottatt")
         while (applicationState.running) {
-            kafkaListener.poll(zeroMillis).forEach {
+            kafkaListener.poll(oneSecondInMillis).forEach {
                 val receivedMessage = it.value()
                 val archiveReference = receivedMessage.getArchiveReference()
                 log.info("Received record from topic $topicAltinnMaalekortMottatt with AR $archiveReference")
