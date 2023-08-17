@@ -22,7 +22,7 @@ jobs:
   deploy-topic-prod:
     name: Deploy topics to prod
     needs: deploy-topic-dev
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
